@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <h2 class="mt-5">Login</h2>
+        <form id="login-form">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" class="form-control" id="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+        <div id="message" class="mt-3"></div>
+        <p class="mt-3">Don't have an account? <a href="signup.html">Signup here</a></p>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $("#login-form").on("submit", function (e) {
+                e.preventDefault();
+                const username = $("#username").val();
+                const password = $("#password").val();
+
+                $.post("http://localhost:3000/api/auth/login", {
+                    username,
+                    password
+                })
+                .done(function (data) {
+                    localStorage.setItem('userId', data.userId); // Store the user session
+                    window.location.href = "chat.html"; // Redirect to chat page
+                })
+                .fail(function (jqXHR) {
+                    $("#message").html(`<div class="alert alert-danger">${jqXHR.responseJSON.message}</div>`);
+                });
+            });
